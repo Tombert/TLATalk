@@ -149,5 +149,22 @@ Our model is done; Now we just need to tell TLA+ to effectively ``loop" for us b
 \begin{frame}{Demo!}
     Let me show you how this works in the TLA+ toolbox.
 \end{frame}
+\begin{frame}[PlusCal]
+while it might be considered cheating, TLA+ has a system for programmers to more easily move over: PlusCal
+\end{frame}
+\begin{frame}[PlusCal]
+To replicate what we had before, we could write something like:
+\begin{lstlisting}
+i := 0;
+while i < 10 do
+i := i + 1;
+end while
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[PlusCal]
+PlusCal gives you most of TLA+ and its mathematical beauty.  It's cool. You should use it instead of pseudocode.
+\end{frame}
 
 \end{document}
