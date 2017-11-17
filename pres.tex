@@ -1,0 +1,153 @@
+\documentclass{beamer}
+\usepackage{default}
+\usepackage{listings}
+\usepackage{graphicx}
+% colors (theme=...): red (default), blue, cyan, orange, green
+\mode<presentation>
+\usecolortheme{wolverine}
+% title and author
+\title{An Introduction to TLA+}
+\author{Tom Gebert}
+
+% document
+\begin{document}
+%\titlegraphic{\includegraphics[scale=.1]{vim.png}}
+\frame{\titlepage}
+\begin{frame} {What is a specification?}
+What is a specification? 
+       \begin{itemize}
+	       \item A specification is a document that describes the \textbf{behavior} or an application or system. \begin{itemize} 
+	       \item Says nothing about: \begin{itemize}
+			       \item Performance
+			       \item Implementation Details
+                               \item Programming Language Choice
+	       \end{itemize}
+	       \end{itemize}
+		       
+       \item Typically more mathematically oriented.
+       \item Another layer of abstraction on top of your code
+       \end{itemize}
+
+\end{frame}
+\begin{frame} {Why would you want a specification? }
+    What is the appeal of a specification over a flow-chart and pseudo-code? 
+\end{frame}
+
+\begin{frame} {Why would you want a specification? }
+	Flow-charts and pseudo-code are great tools, but they have some limitations: 
+        \begin{itemize}
+                \item Relies a lot on ``best guesses" and ``gut feeings"
+                \item Edge cases are easy to miss. 
+                \item There is no way to check to see if the design is correct.
+        \end{itemize}
+\end{frame}
+\begin{frame} {Why would you want a specification? }
+	In order to write and design systems with some guarantee of correctness, we should use the only time-proven tool for such things: Mathematics.
+	\begin{itemize} 
+		\item Specification tools allow you to utilize the power of mathematics and apply it to the design 
+		\item By using mathematical notation, we create an inherently standardized way describing things
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What is TLA+?}
+    What is TLA+? 
+	\begin{itemize}
+		\item TLA stands for the "Temporal Language of Actions"
+		\item Designed by Leslie Lamport \begin{itemize}
+				\item Creator of Paxos and Logical Clocks
+		\end{itemize}
+		\item A specification language and toolkit for describing sofware and testing algorithms.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What is TLA+?}
+	TLA+ really describes three things: 
+	\begin{itemize}
+		\item A language for specificying systems.
+		\item A model checker for the systems that are specified. 
+		\item A rigorous proof system for checking specifications
+	\end{itemize}
+\end{frame}
+\begin{frame}[fragile]
+	\frametitle{What does a simple model look like? }
+	Let's say we wanted to model a simple C program
+\begin{lstlisting}
+int i = 0; 
+int main() {
+    while(i < 10){
+        i++;
+    }
+}
+\end{lstlisting}
+
+
+\end{frame}
+\begin{frame}[fragile]
+	\frametitle{What does a simple model look like?}
+	We fist define our program in terms of states.  
+	\begin{itemize}
+		\item As the program begins, right before the i is defined, we can call that state ``Begin"
+		\item After i is assigned, we can call that state ``Defined``
+	        \item After we're done with the loop, can can call the final state ``Done"
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{What does a simple model look like?}
+	First we need to define our variables.  Typically, you keep one variable to manage the program state we defined above, in addition to any needed for your algorithm.  This variable is usually called ``pc" for "program controller".
+
+	\begin{lstlisting}
+	VARIABLES pc, i
+	\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{What does a simple model look like?}
+	We then need to define our initial state.
+	\begin{lstlisting}
+	Init == pc = "Begin"
+	\end{lstlisting}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{What does a simple model look like?}
+	New states are designated with a ' symbol.  We'll use this to ``update" pc and ``assign" i. We also use a disjunctive ``AND" to add steps together. 
+	\begin{lstlisting}
+        Defined ==  /\ pc = "Begin" 
+	            /\ i' = 0 
+                    /\ pc' = "Initialize"
+	\end{lstlisting}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{What does a simple model look like?}
+	Now we are able to enter the loop.  We check the state to ensure it's initialized, and then increment until we're not allowed to anymore. 
+	\begin{lstlisting}
+        Loop ==  /\ pc = "Initialize" 
+	            /\ IF i < 10  
+                           THEN /\ i' = i + 1 
+                                /\ pc' = "Initialize"
+                       ELSE     /\ pc' = "Done"
+                                /\ i' = 10
+	\end{lstlisting}
+
+
+\end{frame}
+\begin{frame}[fragile]
+	\frametitle{What does a simple model look like?}
+Our model is done; Now we just need to tell TLA+ to effectively ``loop" for us by defining our ``Next" operation.
+	\begin{lstlisting}
+
+           Next == Initialize \/ Loop
+	\end{lstlisting}
+\end{frame}
+\begin{frame}{Demo!}
+    Let me show you how this works in the TLA+ toolbox.
+\end{frame}
+
+\end{document}

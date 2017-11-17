@@ -1,0 +1,6 @@
+\frametitle{What does a simple model look like?}
+Our model is done; Now we just need to tell TLA+ to effectively ``loop" for us by defining our ``Next" operation.
+	\begin{lstlisting}
+
+           Next == Initialize \/ Loop
+	\end{lstlisting}
